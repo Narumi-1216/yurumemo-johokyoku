@@ -132,9 +132,13 @@ def correct_perspective(img, tag=""):
     wp = int(max(np.linalg.norm(pts[1]-pts[0]), np.linalg.norm(pts[2]-pts[3])))
     hp = int(max(np.linalg.norm(pts[3]-pts[0]), np.linalg.norm(pts[2]-pts[1])))
 
-    # Skip if result would be too small vs original
+    # Skip if result < 55% of original dimension
     if wp < w*0.55 or hp < h*0.55:
         print(f"  [{tag}] Perspective skipped: detected {wp}×{hp} < 55% of {w}×{h}")
+        return img
+    # Skip if output area < 95% of original (quad over-cropped real content)
+    if (wp * hp) < 0.95 * (w * h):
+        print(f"  [{tag}] Perspective skipped: area {wp*hp} < 95% of {w*h}")
         return img
 
     dst = np.float32([[0,0],[wp-1,0],[wp-1,hp-1],[0,hp-1]])
@@ -143,6 +147,9 @@ def correct_perspective(img, tag=""):
                                borderMode=cv2.BORDER_CONSTANT, borderValue=(255,255,255))
     print(f"  [{tag}] Perspective: {w}×{h} → {wp}×{hp}")
     return out
+
+
+MAX_DESKEW_DEG = 1.5  # skip deskew above this angle (likely false Hough detection)
 
 
 def deskew(img):
@@ -158,6 +165,9 @@ def deskew(img):
                   if abs(np.degrees(l[0][1])-90) < 8]
         if angles: angle = float(np.median(angles))
     if abs(angle) < 0.3: return img, 0.0
+    if abs(angle) > MAX_DESKEW_DEG:
+        print(f"  Deskew {angle:.2f}° exceeds cap {MAX_DESKEW_DEG}°, skipping")
+        return img, 0.0
     print(f"  Deskew: {angle:.2f}°")
     M = cv2.getRotationMatrix2D((w/2,h/2), -angle, 1.0)
     ca, sa = abs(M[0,0]), abs(M[0,1])
@@ -462,7 +472,7 @@ def build_canvas(images, Hs, seam_dir="v", max_dim=18000):
 # Row and final stitching
 # ───────────────────────────────────────
 
-def stitch_row(images, tag, overlap_frac=0.30):
+def stitch_row(images, tag, overlap_frac=0.35):
     if len(images) == 1: return images[0]
     Hs = [np.eye(3, dtype=np.float64)]
     for i in range(1, len(images)):
@@ -475,14 +485,20 @@ def stitch_row(images, tag, overlap_frac=0.30):
 
 
 def stitch_vertical(row_imgs, overlap_frac=0.20):
+    """
+    Vertically stitch row images using TRANSLATION-ONLY homography.
+    Scale/rotation from SIFT is discarded to prevent compounding distortion
+    across rows (row 3→2 H had 0.75x scale that cascaded to 0.62x at row 4).
+    """
     if len(row_imgs) == 1: return row_imgs[0]
     Hs = [np.eye(3, dtype=np.float64)]
     for i in range(1, len(row_imgs)):
         print(f"\n  Vertical align row {i+1}→{i}...")
-        H = compute_H(row_imgs[i-1], row_imgs[i], overlap_frac, "v")
-        H[2,:] = [0, 0, 1]
-        Hs.append(Hs[-1] @ H)
-        print(f"  H local: tx={H[0,2]:.0f}  ty={H[1,2]:.0f}")
+        H_full = compute_H(row_imgs[i-1], row_imgs[i], overlap_frac, "v")
+        tx, ty = H_full[0, 2], H_full[1, 2]
+        H_trans = np.array([[1,0,tx],[0,1,ty],[0,0,1]], np.float64)
+        Hs.append(Hs[-1] @ H_trans)
+        print(f"  Translation: tx={tx:.0f}  ty={ty:.0f}")
     return build_canvas(row_imgs, Hs, seam_dir="h", max_dim=MAX_FINAL_DIM)
 
 
