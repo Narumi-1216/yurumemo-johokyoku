@@ -21,10 +21,11 @@ from scipy.ndimage import uniform_filter1d
 UPLOAD_DIR    = "/root/.claude/uploads/1b9fe45d-a299-5f9c-9937-d45d27c12f22/"
 OUTPUT_DIR    = "/home/user/yurumemo-johokyoku/map_output/"
 REF_FILE      = UPLOAD_DIR + "12b92caa-IMG_6832.jpeg"
-SCALE_OUT     = 3.0    # output canvas = SCALE_OUT × corrected_reference_dims
-MATCH_DIM_REF = 3000   # reference max-dim for SIFT (→ s_r ≈ 0.55)
-MATCH_DIM_CU  = 1500   # close-up max-dim for SIFT  (→ s_c ≈ 0.26)
-                       # giving ~1.6× scale ratio in overlap — fine for SIFT
+SCALE_OUT     = 3.3    # output canvas = SCALE_OUT × corrected_reference_dims
+                       # ≈ native close-up resolution (zoom factor ~3.3×)
+MATCH_DIM_REF = 4000   # reference max-dim for SIFT (→ s_r ≈ 0.73)
+MATCH_DIM_CU  = 2000   # close-up max-dim for SIFT  (→ s_c ≈ 0.35)
+                       # scale ratio ~1.6× in overlap — keeps SIFT reliable
 
 CLOSE_UPS = [
     (UPLOAD_DIR + "69a424a3-IMG_6837.jpeg",  "r1_1"),
@@ -122,7 +123,7 @@ def compute_H_to_ref(ref, cu, tag=""):
     gr = cv2.cvtColor(ref_sm, cv2.COLOR_BGR2GRAY)
     gc = cv2.cvtColor(cu_sm,  cv2.COLOR_BGR2GRAY)
 
-    sift = cv2.SIFT_create(nfeatures=15000, contrastThreshold=0.005, edgeThreshold=20)
+    sift = cv2.SIFT_create(nfeatures=20000, contrastThreshold=0.004, edgeThreshold=20)
     kp_r, des_r = sift.detectAndCompute(gr, None)
     kp_c, des_c = sift.detectAndCompute(gc, None)
     print(f"    KP: ref={len(kp_r)}, cu={len(kp_c)}")
