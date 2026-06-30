@@ -1,0 +1,34 @@
+name: Deploy Dev Environment
+
+on:
+  push:
+    branches:
+      - claude/household-app-audit-features-tv8e5s
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run build
+        env:
+          BASE_PATH: /yurumemo-johokyoku/dev
+
+      - name: Deploy to GitHub Pages (dev/)
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: out
+          target-folder: dev
+          branch: gh-pages
+          clean: false
