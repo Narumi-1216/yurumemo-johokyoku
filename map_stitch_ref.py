@@ -40,6 +40,8 @@ CLOSE_UPS = [
     (UPLOAD_DIR + "c816dae8-IMG_6848.jpeg",  "r4_1"),
     (UPLOAD_DIR + "d2f6ad4d-IMG_6849.jpeg",  "r4_2"),
     (UPLOAD_DIR + "7ae2ed01-IMG_6850.jpeg",  "r4_3"),
+    (UPLOAD_DIR + "ea45a7de-IMG_7029.jpeg",  "r5_1"),
+    (UPLOAD_DIR + "4eb93d9e-IMG_7028.jpeg",  "r5_2"),
 ]
 
 
