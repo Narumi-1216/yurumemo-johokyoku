@@ -1,0 +1,5 @@
+1:"$Sreact.fragment"
+2:I[97367,["/yurumemo-johokyoku/dev/_next/static/chunks/13h-0fd.p-1ga.js","/yurumemo-johokyoku/dev/_next/static/chunks/0n4z.7yu76je-.js"],"OutletBoundary"]
+3:"$Sreact.suspense"
+0:{"rsc":["$","$1","c",{"children":[["$","div",null,{"children":[["$","p",null,{"className":"text-xs font-medium tracking-widest uppercase mb-10","style":{"color":"#3B7A57"},"children":"About"}],["$","h1",null,{"className":"text-2xl font-bold mb-6 tracking-tight","children":"このブログについて"}],["$","p",null,{"className":"text-sm leading-loose","style":{"color":"#555555"},"children":"「ゆるめも情報局」は、日々の気づきや役立つ情報をゆるっと発信するブログです。"}]]}],null,["$","$L2",null,{"children":["$","$3",null,{"name":"Next.MetadataOutlet","children":"$@4"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"u-f8wcrSMQDR0S0q0cCJE"}
+4:null
