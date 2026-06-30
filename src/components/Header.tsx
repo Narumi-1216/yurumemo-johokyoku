@@ -28,6 +28,12 @@ export default function Header() {
           >
             このブログについて
           </Link>
+          <Link
+            href="/kakeibo"
+            className="transition-colors hover:text-[#3B7A57]"
+          >
+            家計管理
+          </Link>
         </nav>
       </div>
     </header>
