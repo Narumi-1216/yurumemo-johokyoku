@@ -25,6 +25,8 @@ jobs:
         env:
           BASE_PATH: /yurumemo-johokyoku/dev
 
+      - run: touch out/.nojekyll
+
       - name: Deploy to GitHub Pages (dev/)
         uses: JamesIves/github-pages-deploy-action@v4
         with:
