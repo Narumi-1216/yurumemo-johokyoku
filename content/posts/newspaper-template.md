@@ -62,6 +62,7 @@ GoogleカレンダーとObsidianから取得し、時系列順で表示する。
 
 | 区分 | 今日 MM/DD（曜） | 明日 MM/DD（曜） |
 |------|----------------|----------------|
+| 潮の種類 | 大潮／中潮／若潮／長潮／小潮 | 大潮／中潮／若潮／長潮／小潮 |
 | 満潮① | HH:MM（XXX cm） | HH:MM（XXX cm） |
 | 干潮① | HH:MM（XXX cm） | HH:MM（XXX cm） |
 | 満潮② | HH:MM（XXX cm） | HH:MM（XXX cm） |
